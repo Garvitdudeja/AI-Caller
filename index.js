@@ -4,6 +4,8 @@ import twilio from "twilio";
 import morgan from "morgan";
 import OpenAI from "openai";
 import cookieParser from "cookie-parser";
+import UserRoutes from "./resources/Users/User.routes.js";
+import MobileRoutes from "./resources/MobileNumbers/Mobile.routes.js";
 dotenv.config();
 const app = express();
 app.use(cookieParser());
@@ -12,17 +14,20 @@ const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = twilio(accountSid, authToken);
 
+
+
 const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
 });
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(morgan("tiny"));
+app.use("/api/v1/users",UserRoutes);
+app.use("/api/v1/mobile",MobileRoutes);
 
 app.get("/", (req, res) => {
   res.json({ success: "Server Running" });
 });
-
 const InitialMessage = "Hello,  how are you?";
 
 // Route to handle incoming calls
@@ -79,7 +84,7 @@ app.post("/respond", async (req, res) => {
   res.cookie("messages",JSON.stringify(messages) )
   console.log(assistanceResponse);
   const twiml = new twilio.twiml.VoiceResponse();
-  twiml.say(assistanceResponse);
+  twiml.say({voice: 'Polly.Joanna'},assistanceResponse);
   twiml.redirect({ method: "POST" }, "/incoming-call");
   res.writeHead(200, { "Content-Type": "text/xml" });
   res.end(twiml.toString());
