@@ -6,6 +6,10 @@ import OpenAI from "openai";
 import cookieParser from "cookie-parser";
 import UserRoutes from "./resources/Users/User.routes.js";
 import MobileRoutes from "./resources/MobileNumbers/Mobile.routes.js";
+import mongoose from "mongoose";
+mongoose.connect(process.env.MONGO_URI).then(()=>{
+  console.log("Database connection established")
+})
 dotenv.config();
 const app = express();
 app.use(cookieParser());

@@ -3,12 +3,11 @@ import mongoose from "mongoose";
 const UserSchema = mongoose.Schema({
     first_name : {
         type: String,
-        required: true
     },
     last_name : {
         type: String,
     },
-    emai: {
+    email: {
         type: String,
         required: true
     },
@@ -35,5 +34,5 @@ const UserSchema = mongoose.Schema({
     timestamps: true,
 })
 
-const UserModel = mongoose.Model("user", UserSchema);
+const UserModel = mongoose.model("user", UserSchema);
 export default UserModel;

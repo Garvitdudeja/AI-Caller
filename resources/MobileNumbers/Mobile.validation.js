@@ -1,8 +1,8 @@
 import Joi from "joi";
 import DataHelper from "../../helpers/v1/data.helpers.js";
+const _DataHelper = new DataHelper();
 import ResponseHelper from '../../helpers/v1/response.helpers.js';
 const response = new ResponseHelper();
-const _DataHelper = new DataHelper();
 
 export default class MobileValidation {
 

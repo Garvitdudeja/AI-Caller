@@ -361,4 +361,9 @@ export default class DataHelper {
         return uuidv4()
     }
 
+    async joiResponseHandler(errors){
+        const message = errors.details[0].message
+        return message.replace(/"/g, '').trim();
+    }
+
 }
