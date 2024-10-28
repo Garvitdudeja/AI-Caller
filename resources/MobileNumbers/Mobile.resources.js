@@ -9,4 +9,13 @@ export default class MobileResource {
             return false
         }
     }
+
+    async createOne(data){
+        try{
+            const mobile = mobile_number_model.create(data);
+            return mobile;
+        }catch(err){
+            return false
+        }
+    }
 }

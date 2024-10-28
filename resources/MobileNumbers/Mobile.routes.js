@@ -9,5 +9,6 @@ const mobile = new MobileController();
 const router = express.Router(); // Use Router() instead of express()
 
 router.patch('/',validate.updateOne,mobile.updateNumberInfo);
+router.post('/',validate.createOne,mobile.updateNumberInfo);
 
 export default router;

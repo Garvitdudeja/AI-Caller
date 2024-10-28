@@ -22,5 +22,22 @@ export default class MobileValidation {
         next();
     }
 
+
+    async createOne(req,res,next){
+        console.log('MobileValidation@createOne');
+        const schema = {
+            'mobile_number': Joi.string().required(),
+            'questions': Joi.array().optional(),
+            'voice': Joi.string().optional()
+        }
+        
+    let errors = await _DataHelper.joiValidation(req.body, schema);
+
+    if (errors) {
+      return response.badRequest("invalid request data", res, errors);
+    }
+        next();
+    }
+
 };
 

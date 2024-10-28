@@ -5,4 +5,11 @@ export default class UserResource {
         const user = await UserModel.create(data);
         return user;
     }
+
+    async findByEmail(email){
+        const user = await UserModel.find({email});
+        return user;
+    }
+
+
 }
