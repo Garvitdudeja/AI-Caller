@@ -8,6 +8,6 @@ const user = new UserController();
 const router = express.Router(); // Use Router() instead of express()
 
 router.post('/sign-up', validate.signup,user.createOne);
-router.post('/login', validate.login,user.login);
+router.post('/log-in', validate.login,user.login);
 
 export default router;

@@ -20,7 +20,7 @@ export default class UserValidation {
       return response.badRequest("invalid request data", res, errors);
     }
     const user = await  _user.findByEmail(req.body.email);
-    if (user.lenght>0) {
+    if (user) {
       return response.conflict("User already exists", res, user);
     }
     next();
@@ -32,13 +32,12 @@ export default class UserValidation {
       email: Joi.string().email().required(),
       password: Joi.string().required(),
     };
-
     let errors = await _DataHelper.joiValidation(req.body, schema);
     if (errors) {
       return response.badRequest("invalid request data", res, errors);
     }
     const user = await  _user.findByEmail(req.body.email);
-    if (user.lenght==0) {
+    if (!user) {
       return response.badRequest("User doesn't exists", res, {});
     }else{
       req.user = user;
