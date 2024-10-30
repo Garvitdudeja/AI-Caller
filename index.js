@@ -6,6 +6,7 @@ import OpenAI from "openai";
 import cookieParser from "cookie-parser";
 import UserRoutes from "./resources/Users/User.routes.js";
 import MobileRoutes from "./resources/Mobile/Mobile.routes.js";
+import IncomingRoutes from "./resources/Incoming/Incoming.routes.js";
 import mongoose from "mongoose";
 mongoose.connect(process.env.MONGO_URI).then(()=>{
   console.log("Database connection established")
@@ -14,20 +15,13 @@ dotenv.config();
 const app = express();
 app.use(cookieParser());
 
-const accountSid = process.env.ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = twilio(accountSid, authToken);
 
-
-
-const openai = new OpenAI({
-  apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
-});
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(morgan("tiny"));
 app.use("/api/v1/users",UserRoutes);
 app.use("/api/v1/mobile",MobileRoutes);
+app.use("/api/v1/incoming",IncomingRoutes);
 
 app.get("/", (req, res) => {
   res.json({ success: "Server Running" });
@@ -95,20 +89,20 @@ app.post("/respond", async (req, res) => {
 });
 
 // Function to create an outgoing call
-const createCall = async () => {
-  try {
-    const call = await client.calls.create({
-      url: "http://demo.twilio.com/docs/voice.xml",
-      to: "+917009330672",
-      from: process.env.PHONE_NUMBER,
-      // from: "+15005550006",
-      // to: "+917009330672",
-    });
-    console.log(call.sid);
-  } catch (error) {
-    console.error("Error creating call:", error);
-  }
-};
+// const createCall = async () => {
+//   try {
+//     const call = await client.calls.create({
+//       url: "http://demo.twilio.com/docs/voice.xml",
+//       to: "+917009330672",
+//       from: process.env.PHONE_NUMBER,
+//       // from: "+15005550006",
+//       // to: "+917009330672",
+//     });
+//     console.log(call.sid);
+//   } catch (error) {
+//     console.error("Error creating call:", error);
+//   }
+// };
 
 // createCall();
 
