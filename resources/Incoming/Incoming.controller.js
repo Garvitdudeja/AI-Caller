@@ -34,7 +34,7 @@ export default class IncomingController {
   async handleIncoming(req, res) {
     const { From, To, CallSid } = req.body; // Extract call details from the request body
     console.log(`Received call from: ${From} to: ${To}, Call SID: ${CallSid}`);
-    const mobileInfo = await _Mobile.findByMobileNumber(From);
+    const mobileInfo = await _Mobile.findByMobileNumber(To);
     // Respond to Twilio with instructions for the call
     console.log(mobileInfo.question_to_ask[0])
     const twiml = new twilio.twiml.VoiceResponse();
@@ -57,10 +57,10 @@ export default class IncomingController {
     }
     twiml.gather({
       input: ["speech"],
-      speechTimeout: "auto",
+    speechTimeout: "auto",
       speechModel: "experimental_conversations",
       enhanced: true,
-      action: "/respond",
+      action: "api/v1/incoming/respond",
     });
     res.writeHead(200, { "Content-Type": "text/xml" });
     res.end(twiml.toString());

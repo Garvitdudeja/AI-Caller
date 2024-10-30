@@ -15,16 +15,6 @@ const router = express.Router(); // Use Router() instead of express()
 router.post('/',validate.createOne,Incoming.createOne);
 
 
-
-
-const accountSid = process.env.ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = twilio(accountSid, authToken);
-
-
-
-const InitialMessage = "Hello,  how are you?";
-
 // Route to handle incoming calls
 router.post("/incoming-call",Incoming.handleIncoming);
 
