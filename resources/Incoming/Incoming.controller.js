@@ -36,23 +36,29 @@ export default class IncomingController {
     console.log(`Received call from: ${From} to: ${To}, Call SID: ${CallSid}`);
     const mobileInfo = await _Mobile.findByMobileNumber(To);
     // Respond to Twilio with instructions for the call
-    console.log(mobileInfo.question_to_ask[0])
     const twiml = new twilio.twiml.VoiceResponse();
-    if (!req.cookies.messages) {
+    if (!req.cookies.data) {
       twiml.say(mobileInfo.question_to_ask[0]);
+      const logCall = await _Incoming.createOne({From,To,CallSid})
+      console.log(logCall,mobileInfo)
       res.cookie(
-        "messages",
-        JSON.stringify([
-          {
-            role: "system",
-            content:
-              "We are Globe Integrity the best Insurance company in USA we have insurances that you can imagine",
-          },
-          {
-            role: "assistant",
-            content: mobileInfo.question_to_ask[0],
-          },
-        ])
+        "data",
+        JSON.stringify({
+          "messages": [
+            {
+              role: "system",
+              content:
+                "We are Globe Integrity the best Insurance company in USA we have insurances that you can imagine",
+            },
+            {
+              role: "assistant",
+              content: mobileInfo.question_to_ask[0],
+            },
+          ], 
+          currentQuestion: 0,
+          _id: logCall._id,
+          receivingNumber: To,
+        })
       );
     }
     twiml.gather({
@@ -60,7 +66,7 @@ export default class IncomingController {
     speechTimeout: "auto",
       speechModel: "experimental_conversations",
       enhanced: true,
-      action: "api/v1/incoming/respond",
+      action: "/api/v1/incoming/respond",
     });
     res.writeHead(200, { "Content-Type": "text/xml" });
     res.end(twiml.toString());
@@ -68,25 +74,28 @@ export default class IncomingController {
 
   async incomingResponse(req, res) {
     const formData = req.body;
-    let messages = JSON.parse(req.cookies.messages || []);
+    let cookieData = JSON.parse(req.cookies.data || []);
+    let messages = cookieData.messages
     const voiceInput = formData["SpeechResult"].toString();
+
+
     messages.push({ role: "user", content: voiceInput });
-
+    const mobileInfo = await _Mobile.findByMobileNumber(cookieData.receivingNumber);
+    const logCall = _Incoming.addConversation(cookieData._id, {assistant: mobileInfo.question_to_ask[Number(cookieData.currentQuestion)],user: voiceInput})
     // OpenAi
-    const chatCompletion = await openai.chat.completions.create({
-      model: "chatgpt-4o-latest",
-      messages,
-      temperature: 0,
-      max_tokens: 100,
-    });
+    // const chatCompletion = await openai.chat.completions.create({
+    //   model: "chatgpt-4o-latest",
+    //   messages,
+    //   temperature: 0,
+    //   max_tokens: 100,
+    // });
 
-    const assistanceResponse = chatCompletion.choices[0].message.content;
-    messages.push({ role: "assistant", content: assistanceResponse });
-    res.cookie("messages", JSON.stringify(messages));
-    console.log(assistanceResponse);
+    // const assistanceResponse = chatCompletion.choices[0].message.content;
+    messages.push({ role: "assistant", content: mobileInfo.question_to_ask[Number(cookieData.currentQuestion)+1] });
+    res.cookie("data", JSON.stringify({...cookieData, messages, currentQuestion: Number(cookieData.currentQuestion)+1}));
     const twiml = new twilio.twiml.VoiceResponse();
-    twiml.say({ voice: "Polly.Joanna" }, assistanceResponse);
-    twiml.redirect({ method: "POST" }, "/incoming-call");
+    twiml.say({ voice: mobileInfo.voice }, mobileInfo.question_to_ask[Number(cookieData.currentQuestion)+1]);
+    twiml.redirect({ method: "POST" }, "/api/v1/incoming/incoming-call");
     res.writeHead(200, { "Content-Type": "text/xml" });
     res.end(twiml.toString());
   }

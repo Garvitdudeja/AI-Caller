@@ -12,4 +12,14 @@ export default class IncomingResource {
         }
     }
 
+    async addConversation(id, data){
+        console.log('IncomingResource@createOne');
+        try{
+            const log = IncomingModel.updateOne({_id: id}, {$push: {Conversation: {...data}}});
+            return log;
+        }catch(err){
+            return false
+        }
+    }
+
 }
