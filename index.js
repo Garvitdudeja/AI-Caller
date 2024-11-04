@@ -1,8 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import twilio from "twilio";
+import cors from "cors";
 import morgan from "morgan";
-import OpenAI from "openai";
 import cookieParser from "cookie-parser";
 import UserRoutes from "./resources/Users/User.routes.js";
 import MobileRoutes from "./resources/Mobile/Mobile.routes.js";
@@ -13,9 +12,8 @@ mongoose.connect(process.env.MONGO_URI).then(()=>{
 })
 dotenv.config();
 const app = express();
+app.use(cors());
 app.use(cookieParser());
-
-
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(morgan("tiny"));
