@@ -12,5 +12,6 @@ const router = express.Router(); // Use Router() instead of express()
 
 router.patch('/',[auth.auth],validate.updateOne,mobile.updateNumberInfo);
 router.post('/',[auth.auth],validate.createOne,mobile.createOne);
+router.get('/',[auth.auth],mobile.getAll);
 
 export default router;

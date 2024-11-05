@@ -22,4 +22,10 @@ export default class MobileController {
         return response.success('Number Addded Successfully', res, data);
     }
 
+    async getAll(req,res){
+        console.log("MobileController@getAll")
+        let data = await _Mobile.getAll(req.query);
+        return response.success('Data Found Sucess', res, data);
+    }
+
 }

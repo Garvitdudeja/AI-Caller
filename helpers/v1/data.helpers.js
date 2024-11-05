@@ -9,8 +9,8 @@ import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 
 export default class DataHelper {
-    
-    
+
+
     async generateHash(value) {
         console.log('DataHelper@generateHash');
         // generate a token
@@ -21,11 +21,11 @@ export default class DataHelper {
 
         return hashedValue;
     }
-    
-    async generateToken(data){
+
+    async generateToken(data) {
         console.log("DataHelper@generateToken");
         let token = jwt.sign(data, process.env.JWT_TOKEN_KEY);
-        if(!token){
+        if (!token) {
             return false
         }
         return token
@@ -42,11 +42,11 @@ export default class DataHelper {
         return hashedPassword;
     }
 
-    async validatePassword(passwordString, passwordHash){
+    async validatePassword(passwordString, passwordHash) {
         console.log("DataHelper@validatePassword")
-        let isPasswordValid = await bcrypt.compare(passwordString,passwordHash)
+        let isPasswordValid = await bcrypt.compare(passwordString, passwordHash)
 
-        if(!isPasswordValid){
+        if (!isPasswordValid) {
             return false
         }
 
@@ -158,7 +158,7 @@ export default class DataHelper {
                 }
             }
 
-            if(parseInt(reqQuery.limit) > 100) {
+            if (parseInt(reqQuery.limit) > 100) {
                 resObj.limit = 100
             } else {
                 resObj.limit = parseInt(reqQuery.limit);
@@ -170,7 +170,7 @@ export default class DataHelper {
 
     async validateDateFormat(date) {
         console.log('DataHelper@validateDateFormat');
-                
+
         let dateRegex = RegExp('^(20[0-9][0-9])[-](0[1-9]|1[0-2])[-](0[1-9]|[12][0-9]|3[01])$');
 
         if (!dateRegex.test(date)) {
@@ -179,9 +179,9 @@ export default class DataHelper {
         return true;
     }
 
-    async todayDate(){
+    async todayDate() {
         let today = new Date();
-        return today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(); 
+        return today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     }
 
     async datePlus(days) {
@@ -189,18 +189,18 @@ export default class DataHelper {
         return date;
     }
 
-    async dateSubtract(days, date= null) {
+    async dateSubtract(days, date = null) {
 
-        if(days == 0) {
-            return new Date(); 
+        if (days == 0) {
+            return new Date();
         }
-        
+
         let dateFormat = Date.now();
-        if(date){
+        if (date) {
             dateFormat = date;
         }
-        return new Date( dateFormat - 1000 * 60 * 60 * 24 * days)
-    
+        return new Date(dateFormat - 1000 * 60 * 60 * 24 * days)
+
     }
 
     async parseJoiErrors(errors) {
@@ -307,11 +307,8 @@ export default class DataHelper {
 
         // set a default limit if it's not provided
         if (!limit) {
-            if (totalItems > 50) {
-                limit = 50
-            } else {
-                limit = totalItems;
-            }
+            limit = totalItems;
+
         } else {
             if (limit > totalItems) {
                 limit = totalItems
@@ -343,12 +340,12 @@ export default class DataHelper {
         }
     }
 
-    async generateOtp(){
+    async generateOtp() {
         console.log('DataHelper@generateOtp');
         return Math.floor(1000 + Math.random() * 9000)
     }
 
-    async checkPhoneNumber(number){
+    async checkPhoneNumber(number) {
         console.log('DataHelper@checkPhoneNumber');
         const reg = /^(\+\d{1,3}[- ]?)?\d{10}$/;
         if (reg.test(number) === false) {
@@ -357,11 +354,11 @@ export default class DataHelper {
         return false
     }
 
-    async generateUuid(){
+    async generateUuid() {
         return uuidv4()
     }
 
-    async joiResponseHandler(errors){
+    async joiResponseHandler(errors) {
         const message = errors.details[0].message
         return message.replace(/"/g, '').trim();
     }
