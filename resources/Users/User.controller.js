@@ -24,6 +24,8 @@ export default class UserController {
         if (await _DataHelper.validatePassword(data.password, req.user.password)) {
             const token  = await _DataHelper.generateToken({id: req.user._id});
             return response.success("User Login Sucess", res, {user: req.user, token})
+        }else{
+            return response.badRequest("Email address or Password don't match", res, {})
         }
     }
 
