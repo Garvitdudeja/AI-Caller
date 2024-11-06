@@ -59,4 +59,15 @@ export default class MobileResource {
         }
 
     }
+
+    async getOneById(id){
+        console.log('MobileResource@getOneById');
+        try {
+            const mobile = await MobileNumberModel.findById(id);
+            return mobile;
+        } catch (err) {
+            return false
+        }
+
+    }
 }

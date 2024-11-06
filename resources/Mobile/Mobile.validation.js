@@ -22,7 +22,7 @@ export default class MobileValidation {
             return response.badRequest("invalid request data", res, errors);
         }
         const mobileInfo = await _mobile.findByMobileNumber(req.body.mobile_number);
-        if(!mobileInfo){
+        if (!mobileInfo) {
             return response.notFound("Mobile number not found", res, {});
         }
         console.log(req.user._id)
@@ -44,11 +44,23 @@ export default class MobileValidation {
             return response.badRequest("invalid request data", res, errors);
         }
         const mobile = await _mobile.findByMobileNumber(req.body.mobile_number);
-        if(mobile){
+        if (mobile) {
             return response.conflict("Mobile Number already exists", res, {});
         }
         next();
     }
 
+    async getOneById(req, res, next) {
+        console.log('MobileValidation@getOneById');
+        const mobile = await _mobile.getOneById(req.params.id);
+        if (!mobile) {
+            return response.notFound("Mobile number not found", res, {});
+        }
+        console.log(mobile.user_id.equals(req.user._id))
+        if(!mobile.user_id.equals(req.user._id)){
+            return response.notFound("Unauthorized to access this data", res, {})
+        }
+        next();
+    }
 };
 

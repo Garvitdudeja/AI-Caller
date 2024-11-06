@@ -28,4 +28,9 @@ export default class MobileController {
         return response.success('Data Found Sucess', res, data);
     }
 
+    async getOneById(req,res){
+        console.log("MobileController@getOneById")
+        let data = await _Mobile.getOneById(req.params.id);
+        return response.success('Data Found Sucess', res, data);
+    }
 }
