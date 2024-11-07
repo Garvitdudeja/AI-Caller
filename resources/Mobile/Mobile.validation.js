@@ -56,7 +56,6 @@ export default class MobileValidation {
         if (!mobile) {
             return response.notFound("Mobile number not found", res, {});
         }
-        console.log(mobile.user_id.equals(req.user._id))
         if(!mobile.user_id.equals(req.user._id)){
             return response.notFound("Unauthorized to access this data", res, {})
         }

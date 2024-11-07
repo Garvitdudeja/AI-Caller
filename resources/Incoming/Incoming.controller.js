@@ -39,7 +39,7 @@ export default class IncomingController {
     const twiml = new twilio.twiml.VoiceResponse();
     if (!req.cookies.data) {
       twiml.say(mobileInfo.question_to_ask[0]);
-      const logCall = await _Incoming.createOne({From,To,CallSid})
+      const logCall = await _Incoming.createOne({From,To,CallSid,Mobile_ID: mobileInfo._id })
       console.log(logCall,mobileInfo)
       res.cookie(
         "data",
@@ -81,7 +81,7 @@ export default class IncomingController {
 
     messages.push({ role: "user", content: voiceInput });
     const mobileInfo = await _Mobile.findByMobileNumber(cookieData.receivingNumber);
-    const logCall = _Incoming.addConversation(cookieData._id, {assistant: mobileInfo.question_to_ask[Number(cookieData.currentQuestion)],user: voiceInput})
+    const logCall = await  _Incoming.addConversation(cookieData._id, {assistant: mobileInfo.question_to_ask[Number(cookieData.currentQuestion)],user: voiceInput})
     // OpenAi
     // const chatCompletion = await openai.chat.completions.create({
     //   model: "chatgpt-4o-latest",
@@ -98,5 +98,18 @@ export default class IncomingController {
     twiml.redirect({ method: "POST" }, "/api/v1/incoming/incoming-call");
     res.writeHead(200, { "Content-Type": "text/xml" });
     res.end(twiml.toString());
+  }
+
+
+  async getConversationsByMobile(req,res){
+    console.log("IncomingController@getConversations")
+    let data = await _Incoming.getConversationsByMobile(req.params.id,req.query);
+    return response.success('Data Found Sucess', res, data);
+  }
+
+  async getConversationById(req,res){
+    console.log("IncomingController@getConversationById")
+    let data = await _Incoming.getConversationsByID(req.params.id);
+    return response.success('Data Found Sucess', res, data);
   }
 }

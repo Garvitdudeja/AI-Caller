@@ -9,6 +9,11 @@ const IncomingSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    Mobile_ID:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'MobileNumber',
+        required: true
+    },
     CallSid: {
         type: String,
         required: true

@@ -5,6 +5,8 @@ import ResponseHelper from '../../helpers/v1/response.helpers.js';
 const response = new ResponseHelper();
 import IncomingResource from './Incoming.resources.js';
 const _Incoming = new IncomingResource();
+import MobileResource from '../Mobile/Mobile.resources.js';
+const _Mobile = new MobileResource();
 
 export default class IncomingValidation {
 
@@ -27,6 +29,17 @@ export default class IncomingValidation {
         // }
         next();
     }
+
+    async getConversationsByMobile(req, res, next) {
+        console.log('IncomingValidation@getConversations');
+        const {id} = req.params
+        const mobile = await _Mobile.getOneById(req.params.id);
+        if(!id || !mobile.user_id.equals(req.user._id)){
+            return response.notFound("Mobile number not found", res, {});
+        }
+        next();
+    }
+    
 
 };
 

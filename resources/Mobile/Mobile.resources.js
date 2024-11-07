@@ -45,7 +45,6 @@ export default class MobileResource {
             }
             const count = await MobileNumberModel.find(condtion)
             const { pageNo,totalPages,offset,limit } = await _DataHelper.pagination(count.length, searchCondition.page,searchCondition.limit)
-            console.log(pageNo,totalPages,offset,limit)
             const result = await MobileNumberModel.find(condtion).skip(offset).limit(limit)
             return {
                 page: pageNo,

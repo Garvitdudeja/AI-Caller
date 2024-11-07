@@ -20,4 +20,8 @@ router.post("/incoming-call",Incoming.handleIncoming);
 
 router.post("/respond",Incoming.incomingResponse);
 
+router.get("/mobile/:id",[auth.auth],validate.getConversationsByMobile,Incoming.getConversationsByMobile);
+router.get("/:id",[auth.auth],Incoming.getConversationById);
+
+
 export default router;
