@@ -83,7 +83,7 @@ export default class IncomingController {
 
     messages.push({ role: "user", content: voiceInput });
     const mobileInfo = await _Mobile.findByMobileNumber(cookieData.receivingNumber);
-    const logCall = await  _Incoming.addConversation(cookieData._id, {assistant: currentQuestion,user: voiceInput})
+    const logCall = await  _Incoming.addConversation(cookieData._id, {assistant: cookieData.currentQuestion,user: voiceInput})
     // OpenAi
     const chatCompletion = await openai.chat.completions.create({
       model: "chatgpt-4o-latest",
