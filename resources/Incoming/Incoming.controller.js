@@ -7,6 +7,8 @@ import twilio from "twilio";
 import MobileResource from "../Mobile/Mobile.resources.js";
 const _Mobile = new MobileResource();
 import OpenAI from "openai";
+import DataHelper from "../../helpers/v1/data.helpers.js";
+const _DataHelper = new DataHelper();
 
 const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
@@ -38,9 +40,9 @@ export default class IncomingController {
     // Respond to Twilio with instructions for the call
     const twiml = new twilio.twiml.VoiceResponse();
     if (!req.cookies.data) {
-      twiml.say(mobileInfo.question_to_ask[0]);
+      twiml.say({ voice: mobileInfo.voice },"Hey How are you? I am Jenny your assistant!");
       const logCall = await _Incoming.createOne({From,To,CallSid,Mobile_ID: mobileInfo._id })
-      console.log(logCall,mobileInfo)
+      const AiSystemData =  await _DataHelper.getAISystemData(mobileInfo.question_to_ask);
       res.cookie(
         "data",
         JSON.stringify({
@@ -48,14 +50,14 @@ export default class IncomingController {
             {
               role: "system",
               content:
-                "We are Globe Integrity the best Insurance company in USA we have insurances that you can imagine",
+              AiSystemData
             },
             {
               role: "assistant",
-              content: mobileInfo.question_to_ask[0],
+              content: "Hey How are you? I am Jenny your assistant!",
             },
           ], 
-          currentQuestion: 0,
+          currentQuestion: -1,
           _id: logCall._id,
           receivingNumber: To,
         })
@@ -83,18 +85,18 @@ export default class IncomingController {
     const mobileInfo = await _Mobile.findByMobileNumber(cookieData.receivingNumber);
     const logCall = await  _Incoming.addConversation(cookieData._id, {assistant: mobileInfo.question_to_ask[Number(cookieData.currentQuestion)],user: voiceInput})
     // OpenAi
-    // const chatCompletion = await openai.chat.completions.create({
-    //   model: "chatgpt-4o-latest",
-    //   messages,
-    //   temperature: 0,
-    //   max_tokens: 100,
-    // });
+    const chatCompletion = await openai.chat.completions.create({
+      model: "chatgpt-4o-latest",
+      messages,
+      temperature: 0,
+      max_tokens: 100,
+    });
 
-    // const assistanceResponse = chatCompletion.choices[0].message.content;
-    messages.push({ role: "assistant", content: mobileInfo.question_to_ask[Number(cookieData.currentQuestion)+1] });
-    res.cookie("data", JSON.stringify({...cookieData, messages, currentQuestion: Number(cookieData.currentQuestion)+1}));
+    const assistanceResponse = chatCompletion.choices[0].message.content;
+    messages.push({ role: "assistant", content: assistanceResponse });
+    res.cookie("data", JSON.stringify({...cookieData, messages, currentQuestion: assistanceResponse}));
     const twiml = new twilio.twiml.VoiceResponse();
-    twiml.say({ voice: mobileInfo.voice }, mobileInfo.question_to_ask[Number(cookieData.currentQuestion)+1]);
+    twiml.say({ voice: mobileInfo.voice }, assistanceResponse);
     twiml.redirect({ method: "POST" }, "/api/v1/incoming/incoming-call");
     res.writeHead(200, { "Content-Type": "text/xml" });
     res.end(twiml.toString());

@@ -33,8 +33,9 @@ export default class IncomingValidation {
     async getConversationsByMobile(req, res, next) {
         console.log('IncomingValidation@getConversations');
         const {id} = req.params
-        const mobile = await _Mobile.getOneById(req.params.id);
-        if(!id || !mobile.user_id.equals(req.user._id)){
+        const mobile = await _Mobile.getOneById(id);
+        console.log(req.user,id)
+        if(!mobile ||!id || !mobile.user_id.equals(req.user._id)){
             return response.notFound("Mobile number not found", res, {});
         }
         next();

@@ -363,4 +363,12 @@ export default class DataHelper {
         return message.replace(/"/g, '').trim();
     }
 
+    async getAISystemData(questions){
+        var result = "You are sales agent Jenny sales agent your answers are getting directly given to the user so just ask the question or mould it as needed you can ask these questions to user "
+        questions.forEach((item,index)=>{
+            result += "\n Question "+(parseInt(index)+1)+ ": "+ item 
+        })
+        return result
+    }
+
 }
