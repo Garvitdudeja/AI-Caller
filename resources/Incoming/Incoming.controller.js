@@ -57,7 +57,7 @@ export default class IncomingController {
               content: "Hey How are you? I am Jenny your assistant!",
             },
           ], 
-          currentQuestion: -1,
+          currentQuestion: "Hey How are you? I am Jenny your assistant!",
           _id: logCall._id,
           receivingNumber: To,
         })
@@ -83,7 +83,7 @@ export default class IncomingController {
 
     messages.push({ role: "user", content: voiceInput });
     const mobileInfo = await _Mobile.findByMobileNumber(cookieData.receivingNumber);
-    const logCall = await  _Incoming.addConversation(cookieData._id, {assistant: mobileInfo.question_to_ask[Number(cookieData.currentQuestion)],user: voiceInput})
+    const logCall = await  _Incoming.addConversation(cookieData._id, {assistant: currentQuestion,user: voiceInput})
     // OpenAi
     const chatCompletion = await openai.chat.completions.create({
       model: "chatgpt-4o-latest",
