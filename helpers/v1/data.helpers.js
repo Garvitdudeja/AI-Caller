@@ -364,7 +364,7 @@ export default class DataHelper {
     }
 
     async getAISystemData(questions){
-        var result = "You are sales agent Jenny sales agent your answers are getting directly given to the user make sure the chat is interactive as much as possible you can ask the questions given below  "
+        var result = "You are sales agent Jenny sales agent your answers are getting directly given to the user make sure the chat is interactive as much as possible you can ask the questions given below. don't add emojis as text given by you is converted to voice and push the user to book an appointment with us  "
         questions.forEach((item,index)=>{
             result += "\n Question "+(parseInt(index)+1)+ ": "+ item 
         })
