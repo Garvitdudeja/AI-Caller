@@ -40,7 +40,7 @@ export default class IncomingController {
     // Respond to Twilio with instructions for the call
     const twiml = new twilio.twiml.VoiceResponse();
     if (!req.cookies.data) {
-      twiml.say({ voice: mobileInfo.voice },"Hey How are you? I am Jenny your assistant!");
+      twiml.say({ voice: mobileInfo.voice },"Welcome to Globe Integrity Insurance. How can I assist you today?");
       const logCall = await _Incoming.createOne({From,To,CallSid,Mobile_ID: mobileInfo._id })
       const AiSystemData =  await _DataHelper.getAISystemData(mobileInfo.question_to_ask);
       res.cookie(
@@ -54,10 +54,10 @@ export default class IncomingController {
             },
             {
               role: "assistant",
-              content: "Hey How are you? I am Jenny your assistant!",
+              content: "Welcome to Globe Integrity Insurance. How can I assist you today?",
             },
           ], 
-          currentQuestion: "Hey How are you? I am Jenny your assistant!",
+          currentQuestion: "Welcome to Globe Integrity Insurance. How can I assist you today?",
           _id: logCall._id,
           receivingNumber: To,
         })
