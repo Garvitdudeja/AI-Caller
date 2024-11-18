@@ -364,7 +364,7 @@ export default class DataHelper {
     }
 
     async getAISystemData(questions){
-        var result = "You are sales agent Jenny sales agent your answers are getting directly given to the user so just ask the question or mould it as needed you can ask these questions to user "
+        var result = "You are sales agent Jenny sales agent your answers are getting directly given to the user make sure the chat is interactive as much as possible you can ask the questions given below  "
         questions.forEach((item,index)=>{
             result += "\n Question "+(parseInt(index)+1)+ ": "+ item 
         })
