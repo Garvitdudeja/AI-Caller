@@ -37,12 +37,13 @@ export default class IncomingController {
     const { From, To, CallSid } = req.body; // Extract call details from the request body
     console.log(`Received call from: ${From} to: ${To}, Call SID: ${CallSid}`);
     const mobileInfo = await _Mobile.findByMobileNumber(To);
+    console.log(mobileInfo)
     // Respond to Twilio with instructions for the call
     const twiml = new twilio.twiml.VoiceResponse();
     if (!req.cookies.data) {
-      twiml.say({ voice: mobileInfo.voice },"Welcome to Globe Integrity Insurance. How can I assist you today?");
+      twiml.say({ voice: mobileInfo.voice },"Welcome to "+ mobileInfo.user_id.company.name+ ". How can I assist you today?");
       const logCall = await _Incoming.createOne({From,To,CallSid,Mobile_ID: mobileInfo._id })
-      const AiSystemData =  await _DataHelper.getAISystemData(mobileInfo.question_to_ask);
+      const AiSystemData =  await _DataHelper.getAISystemData(mobileInfo.user_id);
       res.cookie(
         "data",
         JSON.stringify({
@@ -54,10 +55,10 @@ export default class IncomingController {
             },
             {
               role: "assistant",
-              content: "Welcome to Globe Integrity Insurance. How can I assist you today?",
+              content: "Welcome to "+ mobileInfo.user_id.company.name+ ". How can I assist you today?",
             },
           ], 
-          currentQuestion: "Welcome to Globe Integrity Insurance. How can I assist you today?",
+          currentQuestion: "Welcome to "+ mobileInfo.user_id.company.name+ ". How can I assist you today?",
           _id: logCall._id,
           receivingNumber: To,
         })

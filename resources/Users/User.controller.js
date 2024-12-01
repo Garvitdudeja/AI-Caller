@@ -29,4 +29,13 @@ export default class UserController {
         }
     }
 
+    async updateUser(req, res) {
+        console.log('UserController@updateUser')
+        const data = _.pick(req.body, ['first_name', 'last_name','company'])
+        console.log(req.body,data)
+        await _user.updateOne(req.user._id, data)
+        const user  = await _user.getOne(req.user._id);
+        return response.success("User updated successfully", res, { user: user} );
+    }
+
 }

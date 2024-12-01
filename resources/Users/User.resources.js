@@ -19,5 +19,13 @@ export default class UserResource {
         return user;
     }
 
+    async updateOne(id, data){
+        console.log("UserResource@updateOne");
+        const user = await UserModel.updateOne({_id: id}, data, {new: true});
+        console.log(user,"ddd")
+        return user;
+
+    }
+
 
 }

@@ -29,7 +29,7 @@ export default class MobileResource {
     async findByMobileNumber(number) {
         console.log('MobileResource@findByMobileNumber');
         try {
-            const mobile = MobileNumberModel.findOne({ mobile_number: number });
+            const mobile = MobileNumberModel.findOne({ mobile_number: number }).populate("user_id");
             return mobile;
         } catch (err) {
             return false

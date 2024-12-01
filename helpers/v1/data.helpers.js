@@ -377,11 +377,11 @@ export default class DataHelper {
     return message.replace(/"/g, "").trim();
   }
 
-  async getAISystemData(questions) {
+  async getAISystemData(data) {
     var result = `I want you to roleplay you will act as a receptionist and i will be the customer 
 you answers will be fed to customer directly so try to answer small and just ask the questions to the user do not add anything extra. the customer has come after seeing the number on the website
-Information about the company we are globe integrity an insurance company in USA
-we sell insurance and our best selling product is IUL`;
+Information about the company we are ${data.company.name} an ${data.company.type} company in ${data.company.country}
+we sell ${data.company.type} and our best selling product is ${data.most_selling_product}`;
     // questions.forEach((item,index)=>{
     //     result += "\n Question "+(parseInt(index)+1)+ ": "+ item
     // })

@@ -44,4 +44,25 @@ export default class UserValidation {
     }
     next();
   }
+
+  async updateUser(req, res, next) {
+    console.log("UserValidation@updateUser");
+    const schema = {
+      first_name: Joi.string(),
+      last_name: Joi.string(),
+      company: Joi.object({
+        name: Joi.string(),
+        country: Joi.string(),
+        type: Joi.string(),
+        most_selling_product: Joi.string()
+      })
+    };
+    let errors = await _DataHelper.joiValidation(req.body, schema);
+    if (errors) {
+      return response.badRequest("invalid request data", res, errors);
+    }
+    next();
+  }
+
+  
 }
