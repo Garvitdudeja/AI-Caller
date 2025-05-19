@@ -117,39 +117,40 @@ export default class IncomingController {
     );
 
     // 🔗 Fire-and-forget Zoho API call using multipart/form-data
-    try {
-      const zohoApiUrl =
-        "https://www.zohoapis.com/crm/v7/functions/storeaicalls_1/actions/execute?auth_type=apikey&zapikey=1003.ea52eed87a0014942321fe35b0a9b557.2958e2de5bb055884936bb746b431c82";
+    // try {
+    //   const zohoApiUrl =
+    //     "https://www.zohoapis.com/crm/v7/functions/storeaicalls_1/actions/execute?auth_type=apikey&zapikey=1003.ea52eed87a0014942321fe35b0a9b557.2958e2de5bb055884936bb746b431c82";
 
-      const zohoForm = new FormData();
-      zohoForm.append(
-        "arguments",
-        JSON.stringify({
-          twilioId: cookieData._id,
-          Phone: cookieData.receivingNumber,
-          Question: cookieData.currentQuestion,
-          Answer: voiceInput,
-        })
-      );
+    //   const zohoForm = new FormData();
+    //   zohoForm.append(
+    //     "arguments",
+    //     JSON.stringify({
+    //       twilioId: cookieData._id,
+    //       Phone: cookieData.receivingNumber,
+    //       Question: cookieData.currentQuestion,
+    //       Answer: voiceInput,
+    //     })
+    //   );
 
-      // Send in background (non-blocking)
-      axios
-        .post(zohoApiUrl, zohoForm, {
-          headers: zohoForm.getHeaders(),
-        })
-        .then((response) => {
-          console.log("Zoho response:", response.data);
-        })
-        .catch((error) => {
-          console.error("Zoho CRM error:", error.response?.data || error.message);
-        });
-    } catch (err) {
-      console.error("Error setting up Zoho CRM request:", err.message);
-    }
+    //   // Send in background (non-blocking)
+    //   axios
+    //     .post(zohoApiUrl, zohoForm, {
+    //       headers: zohoForm.getHeaders(),
+    //     })
+    //     .then((response) => {
+    //       console.log("Zoho response:", response.data);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Zoho CRM error:", error.response?.data || error.message);
+    //     });
+    // } catch (err) {
+    //   console.error("Error setting up Zoho CRM request:", err.message);
+    // }
 
     // 🗣 Respond to user with the AI's message
     const twiml = new twilio.twiml.VoiceResponse();
     twiml.say({ voice: mobileInfo.voice }, assistanceResponse);
+    console.log(assistanceResponse)
     twiml.redirect({ method: "POST" }, "/api/v1/incoming/incoming-call");
 
     res.writeHead(200, { "Content-Type": "text/xml" });
